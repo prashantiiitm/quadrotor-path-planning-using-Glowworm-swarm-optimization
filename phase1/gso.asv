@@ -157,7 +157,8 @@ for it=1:MaxIt
         for k =1:nPop
             dist = pdist2(glowworm(i).Position(end,:),glowworm(k).Position(end,:));
 			%if it is in it's range of sigth and it's brightness is higher
-            if (dist(1) ~= 0) && (dist(1) <= glowworm(i).range(1)) && (glowworm(i).luciferin(1) <= glowworm(k).luciferin(1))
+            if (dist(1) ~= 0) && 
+                && (glowworm(i).luciferin(1) <= glowworm(k).luciferin(1))
                 neighbors = [neighbors ; k];
             end
         end

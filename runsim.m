@@ -1,5 +1,5 @@
 %close all;
-clear all;
+%clear all;
 clc;
 addpath(genpath('./'));
 
