@@ -126,52 +126,7 @@ glowworm=repmat(empty_glowworm,nPop,1);
 nodes = 100;
 i = 1;
 while i<=nPop
-    NodesEvaluated = zeros(MaxNoofNodes,1);
-    NodesEvaluated(StartNode) = 1;
-    glowworm(i).Position = [];
-    CurrentNode = StartNode;
-    paths = StartNode;
-    curNodeIndex = 1;
-    NVNodes = 0;
-    while le(NVNodes,nodes) && ~isequal(CurrentNode,GoalNode)
-        hor = AllPoints(CurrentNode,1)>AllPoints(GoalNode,1);
-        ver = AllPoints(CurrentNode,2)>AllPoints(GoalNode,2);
-        plan = AllPoints(CurrentNode,3)>AllPoints(GoalNode,3);
-        if(isequal(AllPoints(CurrentNode,1),AllPoints(GoalNode,1)))
-            hor = 2;
-        end
-        if(isequal(AllPoints(CurrentNode,2),AllPoints(GoalNode,2)))
-            ver = 2;
-        end
-        if(isequal(AllPoints(CurrentNode,3),AllPoints(GoalNode,3)))
-            plan = 2;
-        end
-        directions = [hor ver plan];
-        [CurrentNeighbours,ViableNeighbours] = Neighbours(CurrentNode,size(DummyX,1),size(DummyY,1),size(DummyZ,1), Boundaryinitial, Boundaryfinal,AllPoints,directions);
-        CurrentNeighbours = CurrentNeighbours(~CollisionTest(CurrentNeighbours));
-        ViableNeighbours = ViableNeighbours(~CollisionTest(ViableNeighbours));
-        ViableNeighbours = ViableNeighbours(NodesEvaluated(ViableNeighbours) == 0 );
-        CurrentNeighbours = CurrentNeighbours(NodesEvaluated(CurrentNeighbours) == 0 );
-        flag = 0;
-        if ~isempty(ViableNeighbours)
-            pos = ceil(rand*size(ViableNeighbours,1));
-            pos = ViableNeighbours(pos);
-        elseif isempty(ViableNeighbours) && ~isempty(CurrentNeighbours)
-            pos = ceil(rand*size(CurrentNeighbours,1));
-            pos = CurrentNeighbours(pos);
-            flag = 1;
-        elseif isempty(CurrentNeighbours)
-            break;
-        end
-            if flag == 1 
-                NVNodes = NVNodes + 1; 
-            end
-            paths = [paths;pos];
-            NodesEvaluated(pos) = 1;
-            CurrentNode = pos;  
-            curNodeIndex = curNodeIndex + 1;
-        %fprintf('%d %d %d\n',curNodeIndex,nodes,~isequal(CurrentNode,GoalNode));
-    end
+    [paths,CurrentNode,NVNodes] = getPath(CollisionTest,StartNode,GoalNode,AllPoints(:,:),nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
     %fprintf('%d %d\n',curNodeIndex, nodes);
        if CurrentNode == GoalNode 
            glowworm(i).Position = AllPoints(paths,:);

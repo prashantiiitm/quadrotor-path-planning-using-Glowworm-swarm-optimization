@@ -1,13 +1,13 @@
 %close all;
-%clear all;
-%clc;
+clear all;
+clc;
 addpath(genpath('./'));
 
 %% Plan path
 disp('Planning ...');
 map = load_map('maps/map1.txt', 0.1, 0.5, 0.25);
-stop = {[1 -4 1]};
-start  = {[5 17 3]};
+stop = {[4 -4 1]};
+start  = {[5 5 3]};
 nquad = length(start);
 for qn = 1:nquad
     path{qn} = gso(map, start{qn}, stop{qn}, true);
