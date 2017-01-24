@@ -1,16 +1,19 @@
 %close all;
-%clear all;
+clear all;
 clc;
 addpath(genpath('./'));
 
 %% Plan path
 disp('Planning ...');
 map = load_map('maps/map1.txt', 0.1, 0.5, 0.25);
-stop = {[4 -4 1]};
-start  = {[5 5 3]};
+start = {[1 -4 1]};
+stop  = {[5 17 3]};
 nquad = length(start);
 for qn = 1:nquad
+    v = cputime;
     path{qn} = gso(map, start{qn}, stop{qn}, true);
+    c = cputime - v;
+    fprintf('Algo Execution time = %d \n',c);
 end
 if nquad == 1
     plot_path(map, path{1});

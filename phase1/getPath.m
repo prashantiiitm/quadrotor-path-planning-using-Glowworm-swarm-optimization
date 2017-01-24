@@ -9,6 +9,7 @@ function [ paths,CurrentNode,NVNodes ] = getPath(CollisionTest, StartNode,GoalNo
     paths = StartNode;
     curNodeIndex = 1;
     NVNodes = 0;
+    prevNode = GoalNode;
     while le(NVNodes,nodes) && ~isequal(CurrentNode,GoalNode)
         hor = AllPoints(CurrentNode,1)>AllPoints(GoalNode,1);
         ver = AllPoints(CurrentNode,2)>AllPoints(GoalNode,2);
@@ -26,8 +27,8 @@ function [ paths,CurrentNode,NVNodes ] = getPath(CollisionTest, StartNode,GoalNo
         [CurrentNeighbours,ViableNeighbours] = Neighbours(CurrentNode,s1,s2,s3, Boundaryinitial, Boundaryfinal,AllPoints,directions);
         CurrentNeighbours = CurrentNeighbours(~CollisionTest(CurrentNeighbours));
         ViableNeighbours = ViableNeighbours(~CollisionTest(ViableNeighbours));
-        ViableNeighbours = ViableNeighbours(NodesEvaluated(ViableNeighbours) == 0 );
         CurrentNeighbours = CurrentNeighbours(NodesEvaluated(CurrentNeighbours) == 0 );
+        ViableNeighbours = ViableNeighbours(ViableNeighbours ~= prevNode);
         flag = 0;
         if ~isempty(ViableNeighbours)
             pos = ceil(rand*size(ViableNeighbours,1));

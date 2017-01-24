@@ -137,7 +137,9 @@ while i<=nPop
        else 
            glowworm(i).Position = AllPoints(paths,:);
        end
-       
+       glowworm(i).Position(:,4) = paths(:,1);
+       glowworm(i).range = range_init;
+       glowworm(i).luciferin = luciferin_init;
        glowworm(i).Cost = size(paths,1) + 100*pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:));
        if glowworm(i).Cost < GlobalBest.Cost
            GlobalBest.Cost = glowworm(i).Cost; 
@@ -201,20 +203,16 @@ for it=1:MaxIt
             glowworms = glowworm(i).Position;
             toward = glowworm(toward_index).Position;
             
-            normV = norm(toward - glowworms);
-            if normV == 0 || isnan(normV)
-                normV = 5; %step size 
-            end
             
+            newPath(:,:) = changePath(glowworms(:,:),toward(:,:),AllPoints(:,:));
+            glowworm(i).Position(:,:) = newPath(:,:);       
             %new_position = glowworms + step_size.*(toward-glowworms)./normV;
            % glowworm(i).Position.x = new_position;
         end
         if size(neighbors)== 0
-            if sum(glowworm(i).Position) > 0
-            %    glowworm(i).Position.x = glowworm(i).Position.x - step_size;
-            else
-             %   glowworm(i).Position.x = glowworm(i).Position.x + step_size;
-            end
+          
+            
+            
         end
         glowworm(i).range = min(range_boundary,max(0.1,glowworm(i).range + (beta*(k_neigh-size(neighbors,1)))));
         
