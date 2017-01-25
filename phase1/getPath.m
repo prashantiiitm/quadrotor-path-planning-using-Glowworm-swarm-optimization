@@ -42,6 +42,7 @@ function [ paths,CurrentNode,NVNodes ] = getPath(CollisionTest, StartNode,GoalNo
         end
             if flag == 1 
                 NVNodes = NVNodes + 1; 
+                fprintf('%d %d %d\n',AllPoints(pos,:));
             end
             paths = [paths;pos];
             NodesEvaluated(pos) = 1;

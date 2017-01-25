@@ -204,8 +204,8 @@ for it=1:MaxIt
             toward = glowworm(toward_index).Position;
             
             
-            newPath(:,:) = changePath(glowworms(:,:),toward(:,:),AllPoints(:,:));
-            glowworm(i).Position(:,:) = newPath(:,:);       
+            newPath(:,:) = changePath(glowworms(:,:),toward(:,:),AllPoints(:,:),CollisionTest,StartNode,GoalNode,nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
+            %glowworm(i).Position(:,:) = newPath(:,:);       
             %new_position = glowworms + step_size.*(toward-glowworms)./normV;
            % glowworm(i).Position.x = new_position;
         end
@@ -219,7 +219,7 @@ for it=1:MaxIt
         
     end 
 end
-path = GlobalBest.Position;
+path = GlobalBest.Position(:,1:3);
 
 %fprintf('%d %d %d',size(path));
 plot_path(map,path);
