@@ -128,6 +128,7 @@ i = 1;
 while i<=nPop
     [paths,CurrentNode,NVNodes] = getPath(CollisionTest,StartNode,GoalNode,AllPoints(:,:),nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
     %fprintf('%d %d\n',curNodeIndex, nodes);
+    paths = removeLoops(paths);
        if CurrentNode == GoalNode 
            glowworm(i).Position = AllPoints(paths,:);
        elseif CurrentNode ~= GoalNode && NVNodes == (nodes + 1)
@@ -140,11 +141,13 @@ while i<=nPop
        glowworm(i).Position(:,4) = paths(:,1);
        glowworm(i).range = range_init;
        glowworm(i).luciferin = luciferin_init;
-       glowworm(i).Cost = size(paths,1) + 100*pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:));
+       glowworm(i).Cost = size(paths,1) + 1000*pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:));
+       %fprintf('%d %d %d %d %d %d %d \n',AllPoints(CurrentNode,:),AllPoints(GoalNode,:),pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:)));
        if glowworm(i).Cost < GlobalBest.Cost
            GlobalBest.Cost = glowworm(i).Cost; 
            GlobalBest.Position = glowworm(i).Position;
        end
+       
        i = i + 1;
 end
 % Algorithm initialization

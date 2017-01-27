@@ -28,6 +28,7 @@ else
     threed =NaN;
 end
 ViableNeighbours = [oned twod threed];
+fprintf('
 if AllPoints(CurrentNode,1)==Boundaryinitial(1)
     CurrentNeighbours(4) = NaN;
     if directions(2) == 1
@@ -70,11 +71,6 @@ CurrentNeighbours(isnan(CurrentNeighbours(:,1)),:)=[];
 CurrentNeighbours = (CurrentNeighbours(CurrentNeighbours>=0 & CurrentNeighbours<=A));
 ViableNeighbours(isnan(ViableNeighbours(:,1)),:)=[];
 ViableNeighbours = (ViableNeighbours(ViableNeighbours>=0 & ViableNeighbours<=A));
-
-temp(:,:) = AllPoints(ViableNeighbours,:);
-temp(end+1,:) = AllPoints(CurrentNode,:);
-
-
 end
 % for i=1:size(CurrentNeighbours,1)
 % %     a = sum(abs(AllNodes(1:j,1:3)-ones(j,1)*CurrentNeighbours(i,1:3)),2)<1e-5;
