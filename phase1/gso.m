@@ -1,16 +1,16 @@
 function path = gso(map, start, goal, astar)
-% DIJKSTRA Find the shortest path from start to goal.
-%   PATH = DIJKSTRA(map, start, goal) returns an M-by-3 matrix, where each row
+% GSO Find the shortest path from start to goal.
+%   PATH = GSO(map, start, goal) returns an M-by-3 matrix, where each row
 %   consists of the (x, y, z) coordinates of a point on the path.  The first
 %   row is start and the last row is goal.  If no path is found, PATH is a
 %   0-by-3 matrix.  Consecutive points in PATH should not be farther apart than
 %   neighboring cells in the map (e.g.., if 5 consecutive points in PATH are
 %   co-linear, don't simplify PATH by removing the 3 intermediate points).
 %
-%   PATH = DIJKSTRA(map, start, goal, astar) finds the path using euclidean
+%   PATH = GSO(map, start, goal, astar) finds the path using euclidean
 %   distance to goal as a heuristic if astar is true.
 %
-%   [PATH, NUM_EXPANDED] = DIJKSTRA(...) returns the path as well as
+%   [PATH, NUM_EXPANDED] = GSO(...) returns the path as well as
 %   the number of points that were visited while performing the search.
 if nargin < 4
     astar = false;
@@ -93,9 +93,8 @@ TotalScore(StartNode,1) = GoalScore(StartNode,1) + Heuristic(StartNode,GoalNode,
 
 %First Task it to generate population of solutions
 
-nPop = 20;
-MaxIt = 100;
-nVar = 5;
+nPop = 50;
+MaxIt = 50;
 
 %RANGE
 range_init = 5.0;
@@ -141,7 +140,7 @@ while i<=nPop
        glowworm(i).Position(:,4) = paths(:,1);
        glowworm(i).range = range_init;
        glowworm(i).luciferin = luciferin_init;
-       glowworm(i).Cost = size(paths,1) + 1000*pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:));
+       glowworm(i).Cost = size(paths,1) + 100*pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:));
        %fprintf('%d %d %d %d %d %d %d \n',AllPoints(CurrentNode,:),AllPoints(GoalNode,:),pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:)));
        if glowworm(i).Cost < GlobalBest.Cost
            GlobalBest.Cost = glowworm(i).Cost; 
@@ -207,18 +206,25 @@ for it=1:MaxIt
             toward = glowworm(toward_index).Position;
             
             
-            newPath(:,:) = changePath(glowworms(:,:),toward(:,:),AllPoints(:,:),CollisionTest,StartNode,GoalNode,nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
-            %glowworm(i).Position(:,:) = newPath(:,:);       
+            newPath(:,:) = changePath(glowworms(:,4),toward(:,4),AllPoints(:,:),CollisionTest,StartNode,GoalNode,nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
+            CurrentNode = newPath(end,:);
+            glowworm(i).Position(:,:) = [];
+            glowworm(i).Position(:,1:3) = AllPoints(newPath(:,1),:);
+            glowworm(i).Position(:,4) = newPath(:,1);
+            glowworm(i).Cost = size(newPath,1) + 100*pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:));
             %new_position = glowworms + step_size.*(toward-glowworms)./normV;
            % glowworm(i).Position.x = new_position;
-        end
-        if size(neighbors)== 0
-          
+        elseif size(neighbors)== 0
+          newPath(:,:) = changePath(glowworm(i).Position(:,4),[],AllPoints(:,:),CollisionTest,StartNode,GoalNode,nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
             
             
         end
         glowworm(i).range = min(range_boundary,max(0.1,glowworm(i).range + (beta*(k_neigh-size(neighbors,1)))));
         
+        if glowworm(i).Cost < GlobalBest.Cost
+            GlobalBest.Cost = glowworm(i).Cost; 
+            GlobalBest.Position = glowworm(i).Position;
+        end
         
     end 
 end

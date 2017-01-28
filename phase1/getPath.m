@@ -23,7 +23,7 @@ function [ paths,CurrentNode,NVNodes ] = getPath(CollisionTest, StartNode,GoalNo
         if(isequal(AllPoints(CurrentNode,3),AllPoints(GoalNode,3)))
             plan = 2;
         end
-        directions = [hor ver plan];
+        directions = [ver;hor;plan];
         [CurrentNeighbours,ViableNeighbours] = Neighbours(CurrentNode,s1,s2,s3, Boundaryinitial, Boundaryfinal,AllPoints,directions);
         CurrentNeighbours = CurrentNeighbours(~CollisionTest(CurrentNeighbours));
         ViableNeighbours = ViableNeighbours(~CollisionTest(ViableNeighbours));

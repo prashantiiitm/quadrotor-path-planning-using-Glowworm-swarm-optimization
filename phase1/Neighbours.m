@@ -27,7 +27,7 @@ if directions(3)<2
 else
     threed =NaN;
 end
-ViableNeighbours = [oned twod threed];
+ViableNeighbours = [oned;twod;threed];
 if AllPoints(CurrentNode,1)==Boundaryinitial(1)
     CurrentNeighbours(4) = NaN;
     if directions(2) == 1
@@ -71,8 +71,6 @@ CurrentNeighbours = (CurrentNeighbours(CurrentNeighbours>=0 & CurrentNeighbours<
 ViableNeighbours(isnan(ViableNeighbours(:,1)),:)=[];
 ViableNeighbours = (ViableNeighbours(ViableNeighbours>=0 & ViableNeighbours<=A));
 
-temp(:,:) = AllPoints(ViableNeighbours,:);
-temp(end+1,:) = AllPoints(CurrentNode,:);
 
 
 end
