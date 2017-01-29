@@ -119,7 +119,6 @@ i = 1;
 while i<=nPop
     [paths,CurrentNode,NVNodes] = getPath(CollisionTest,StartNode,GoalNode,AllPoints(:,:),nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
     %fprintf('%d %d\n',curNodeIndex, nodes);
-    paths = removeLoops(paths);
        if CurrentNode == GoalNode 
            glowworm(i).Position = AllPoints(paths,:);
        elseif CurrentNode ~= GoalNode && NVNodes == (nodes + 1)

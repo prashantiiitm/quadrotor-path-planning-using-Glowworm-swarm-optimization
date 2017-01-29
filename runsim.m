@@ -6,8 +6,8 @@ addpath(genpath('./'));
 %% Plan path
 disp('Planning ...');
 map = load_map('maps/map1.txt', 0.1, 0.5, 0.25);
-start = {[1 -4 2]};
-stop  = {[5 17 2]};
+start = {[1 -4 6]};
+stop  = {[9 17 2]};
 nquad = length(start);
 for qn = 1:nquad
     v = cputime;
