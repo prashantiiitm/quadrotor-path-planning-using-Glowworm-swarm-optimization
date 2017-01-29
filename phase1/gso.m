@@ -80,21 +80,12 @@ GenerateNodes = (1:MaxNoofNodes)';
 StartNode = GenerateNodes(sum(abs(AllPoints(:,:)-ones(size(AllPoints,1),1)*start),2)<eps);
 % GoalNode = GenerateNodes(ismember(AllPoints,goal,'rows'));
 GoalNode = GenerateNodes(sum(abs(AllPoints(:,:)-ones(size(AllPoints,1),1)*goal),2)<eps);
-NodesEvaluated = zeros(MaxNoofNodes,1);
-NodesTobeEvaluated = zeros(MaxNoofNodes,1);
-TotalScore(1:MaxNoofNodes,1) = (Inf);
-GoalScore(1:MaxNoofNodes,1) = (Inf);
-GoalScore(StartNode) = 0;
-NodesTobeEvaluated(StartNode) = 1;
-PreviousNodes = zeros(MaxNoofNodes,1);
-NodeCounter = 1;
-TotalScore(StartNode,1) = GoalScore(StartNode,1) + Heuristic(StartNode,GoalNode,AllPoints,astar);
 
 
 %First Task it to generate population of solutions
 
-nPop = 50;
-MaxIt = 50;
+nPop = 30;
+MaxIt = 25;
 
 %RANGE
 range_init = 5.0;
@@ -115,6 +106,7 @@ step_size = 5;
 empty_glowworm.Position=[];
 empty_glowworm.range=[];
 empty_glowworm.luciferin=[];
+empty_glowworm.NV = [];
 
 % Initialize Global Best
 GlobalBest.Cost=inf;
@@ -122,7 +114,7 @@ GlobalBest.Position = [];
 
 % Create glowworms Matrix
 glowworm=repmat(empty_glowworm,nPop,1);
-nodes = 100;
+nodes = 200;
 i = 1;
 while i<=nPop
     [paths,CurrentNode,NVNodes] = getPath(CollisionTest,StartNode,GoalNode,AllPoints(:,:),nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
@@ -139,6 +131,7 @@ while i<=nPop
        end
        glowworm(i).Position(:,4) = paths(:,1);
        glowworm(i).range = range_init;
+       glowworm(i).NV = NVNodes;
        glowworm(i).luciferin = luciferin_init;
        glowworm(i).Cost = size(paths,1) + 100*pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:));
        %fprintf('%d %d %d %d %d %d %d \n',AllPoints(CurrentNode,:),AllPoints(GoalNode,:),pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:)));
@@ -206,17 +199,19 @@ for it=1:MaxIt
             toward = glowworm(toward_index).Position;
             
             
-            newPath(:,:) = changePath(glowworms(:,4),toward(:,4),AllPoints(:,:),CollisionTest,StartNode,GoalNode,nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
-            CurrentNode = newPath(end,:);
-            glowworm(i).Position(:,:) = [];
-            glowworm(i).Position(:,1:3) = AllPoints(newPath(:,1),:);
+            [newPath,Cost] = changePath(glowworms(:,4),toward(:,4),AllPoints(:,:),CollisionTest,StartNode,GoalNode,nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
+            newPath = removeLoops(newPath);
+            glowworm(i).Position = AllPoints(newPath(:,1),:);
             glowworm(i).Position(:,4) = newPath(:,1);
-            glowworm(i).Cost = size(newPath,1) + 100*pdist2(AllPoints(CurrentNode,:),AllPoints(GoalNode,:));
+            glowworm(i).Cost = Cost;
             %new_position = glowworms + step_size.*(toward-glowworms)./normV;
            % glowworm(i).Position.x = new_position;
         elseif size(neighbors)== 0
-          newPath(:,:) = changePath(glowworm(i).Position(:,4),[],AllPoints(:,:),CollisionTest,StartNode,GoalNode,nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
-            
+          [newPath,Cost] = changePath(glowworm(i).Position(:,4),[],AllPoints(:,:),CollisionTest,StartNode,GoalNode,nodes,Boundaryinitial,Boundaryfinal,size(DummyX,1),size(DummyY,1),size(DummyZ,1));
+          newPath = removeLoops(newPath);  
+           glowworm(i).Position = AllPoints(newPath(:,1),:);
+            glowworm(i).Position(:,4) = newPath(:,1);
+            glowworm(i).Cost = Cost;
             
         end
         glowworm(i).range = min(range_boundary,max(0.1,glowworm(i).range + (beta*(k_neigh-size(neighbors,1)))));
